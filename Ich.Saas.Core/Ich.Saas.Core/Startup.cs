@@ -1,7 +1,11 @@
+using Ich.Saas.Core.Code.Identity;
+using Ich.Saas.Core.Code.Infrastructure;
 using Ich.Saas.Core.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +30,14 @@ namespace Ich.Saas.Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Identity support
+            services.AddSingleton<ICurrentTenant, CurrentTenant>();
+            services.AddSingleton<ICurrentUser, CurrentUser>();
+            services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, ClaimsPrincipalFactory>();
+            services.AddScoped<IIdentityService, IdentityService>();
+
+            services.AddHttpContextAccessor();
+
             // Database context: For localdb connectionString's path is calculated
             var connectionString = _config.GetConnectionString("Saas").Replace("{Path}", _env.ContentRootPath);
             
@@ -35,8 +47,10 @@ namespace Ich.Saas.Core
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHttpContextAccessor httpContextAccessor)
         {
+            ServiceLocator.Register(httpContextAccessor);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
