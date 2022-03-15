@@ -1,6 +1,8 @@
+using Ich.Saas.Core.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,17 +15,23 @@ namespace Ich.Saas.Core
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration _config { get; }
+        private IWebHostEnvironment _env { get; }
+        public Startup(IConfiguration config, IWebHostEnvironment env)
         {
-            Configuration = configuration;
+            _config = config;
+            _env = env;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddRazorPages();
+            // Database context: For localdb connectionString's path is calculated
+            var connectionString = _config.GetConnectionString("Saas").Replace("{Path}", _env.ContentRootPath);
+            
+            services.AddDbContext<SaaSContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
