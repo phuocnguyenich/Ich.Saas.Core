@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Dofactory.Saas.Core.Data.Migrations
+namespace Ich.Saas.Core.Data.Migrations
 {
     public partial class CreateIdentitySchema : Migration
     {
