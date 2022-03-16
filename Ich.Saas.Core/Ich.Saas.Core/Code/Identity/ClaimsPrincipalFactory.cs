@@ -18,7 +18,12 @@ namespace Ich.Saas.Core.Code.Identity
         private readonly SaaSContext _db;
         private readonly ICache _cache;
 
-        public ClaimsPrincipalFactory(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<IdentityOptions> optionsAccessor, SaaSContext db, ICache cache) : base(userManager, roleManager, optionsAccessor)
+        public ClaimsPrincipalFactory(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager, 
+            IOptions<IdentityOptions> optionsAccessor, 
+            SaaSContext db, 
+            ICache cache) : base(userManager, roleManager, optionsAccessor)
         {
             _db = db;
             _cache = cache;

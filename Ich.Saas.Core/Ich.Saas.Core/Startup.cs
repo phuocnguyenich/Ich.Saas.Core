@@ -1,3 +1,4 @@
+using Ich.Saas.Core.Code.Caching;
 using Ich.Saas.Core.Code.Identity;
 using Ich.Saas.Core.Code.Infrastructure;
 using Ich.Saas.Core.Domain;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,11 +32,19 @@ namespace Ich.Saas.Core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Caching
+            services.AddMemoryCache(); // if already added AddControllersWithViews, don't need to AddMemoryCache
+            services.AddScoped<ICache, Cache>();
+
             // Identity support
             services.AddSingleton<ICurrentTenant, CurrentTenant>();
             services.AddSingleton<ICurrentUser, CurrentUser>();
             services.AddScoped<IUserClaimsPrincipalFactory<IdentityUser>, ClaimsPrincipalFactory>();
             services.AddScoped<IIdentityService, IdentityService>();
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
 
             services.AddHttpContextAccessor();
 
@@ -44,6 +54,10 @@ namespace Ich.Saas.Core
             services.AddDbContext<SaaSContext>(options => options.UseSqlServer(connectionString));
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddControllersWithViews(options => {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -71,7 +85,7 @@ namespace Ich.Saas.Core
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
