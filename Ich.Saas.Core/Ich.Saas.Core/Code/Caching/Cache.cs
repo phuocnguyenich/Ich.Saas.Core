@@ -4,10 +4,11 @@ using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Ich.Saas.Core.Code.Caching
 {
+    #region Interface
+
     public interface ICache
     {
         Dictionary<int, Domain.TimeZone> TimeZones { get; }
@@ -29,7 +30,11 @@ namespace Ich.Saas.Core.Code.Caching
         void Clear();
     }
 
-    public class Cache
+    #endregion
+
+    #region Implementation
+
+    public class Cache : ICache
     {
         #region Dependency Injection
 
@@ -102,6 +107,230 @@ namespace Ich.Saas.Core.Code.Caching
 
         #endregion
 
+        #region Locales
+
+        public Dictionary<int, Locale> Locales
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                if (!(_memoryCache.Get(LocalesKey) is Dictionary<int, Locale> dictionary))
+                {
+                    lock (locker)
+                    {
+                        dictionary = _db.Locale.OrderBy(l => l.DisplayName).ToDictionary(l => l.Id);
+                        Add(LocalesKey, dictionary, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+
+        // Clear Locale cache
+
+        private void ClearLocales()
+        {
+            Clear(LocalesKey);
+        }
+
+        #endregion
+
+        #region Languages
+
+        public Dictionary<int, Language> Languages
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                if (!(_memoryCache.Get(LanguagesKey) is Dictionary<int, Language> dictionary))
+                {
+                    lock (locker)
+                    {
+                        dictionary = _db.Language.OrderBy(l => l.Id).ToDictionary(l => l.Id);
+                        Add(LanguagesKey, dictionary, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+
+        // Clear Language cache
+
+        private void ClearLanguages()
+        {
+            Clear(LanguagesKey);
+        }
+
+        #endregion
+
+        #region Currencies
+
+        public Dictionary<int, Currency> Currencies
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                if (!(_memoryCache.Get(CurrenciesKey) is Dictionary<int, Currency> dictionary))
+                {
+                    lock (locker)
+                    {
+                        dictionary = _db.Currency.OrderBy(c => c.Id).ToDictionary(c => c.Id);
+                        Add(CurrenciesKey, dictionary, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+        // Clear currencies cache
+
+        private void ClearCurrencies()
+        {
+            Clear(CurrenciesKey);
+        }
+
+        #endregion
+
+        #region Countries -- tenant specific!
+
+        public Dictionary<int, Country> Countries
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                var key = CountriesKey + _currentTenant.Id;
+
+                if (!(_memoryCache.Get(key) is Dictionary<int, Country> dictionary))
+                {
+                    lock (locker)
+                    {
+                        dictionary = _db.Country.Where(c => c.TenantId == _currentTenant.Id).OrderBy(c => c.Name).ToDictionary(c => c.Id);
+                        Add(key, dictionary, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+        // Clear countries cache
+
+        public void ClearCountries()
+        {
+            Clear(CountriesKey + _currentTenant.Id);
+        }
+
+        #endregion
+
+        #region Departments -- tenant specific!
+
+        public Dictionary<int, Department> Departments
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                var key = DepartmentsKey + _currentTenant.Id;
+
+                if (!(_memoryCache.Get(key) is Dictionary<int, Department> dictionary))
+                {
+                    lock (locker)
+                    {
+                        dictionary = _db.Department.Where(d => d.TenantId == _currentTenant.Id).OrderBy(d => d.Name).ToDictionary(d => d.Id);
+                        Add(key, dictionary, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+
+        // Clear departments cache
+
+        public void ClearDepartments()
+        {
+            Clear(DepartmentsKey + _currentTenant.Id);
+        }
+
+        #endregion
+
+        #region Instructors -- tenant specific!
+
+        public Dictionary<int, Instructor> Instructors
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                var key = InstructorsKey + _currentTenant.Id;
+
+                if (!(_memoryCache.Get(key) is Dictionary<int, Instructor> dictionary))
+                {
+                    lock (locker)
+                    {
+                        dictionary = _db.Instructor.Where(i => i.TenantId == _currentTenant.Id).OrderBy(i => i.LastName).ToDictionary(i => i.Id);
+                        Add(key, dictionary, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionary;
+            }
+        }
+
+        public void ClearInstructors()
+        {
+            Clear(InstructorsKey + _currentTenant.Id);
+        }
+
+        #endregion
+
+        #region Translations -- language specific!
+
+        public Dictionary<string, string> Translations
+        {
+            get
+            {
+                // ** Lazy load pattern
+
+                if (!(_memoryCache.Get(TranslatesKey) is Dictionary<int, Dictionary<string, string>> dictionaries))
+                {
+                    lock (locker)
+                    {
+                        dictionaries = new Dictionary<int, Dictionary<string, string>>();
+                        foreach (var language in _db.Language)
+                            dictionaries.Add(language.Id, new Dictionary<string, string>());
+
+                        foreach (var translate in _db.Translate)
+                            dictionaries[translate.LanguageId].Add(translate.Key, translate.Value);
+
+                        Add(TranslatesKey, dictionaries, DateTime.Now.AddHours(24));
+                    }
+                }
+
+                return dictionaries[_currentUser.LanguageId];
+            }
+        }
+
+
+        // Clear resources cache
+
+        public void ClearTranslations()
+        {
+            Clear(TranslatesKey);
+        }
+
+        #endregion
+
         #region Cache Helpers
 
         // clears single cache entry
@@ -116,6 +345,23 @@ namespace Ich.Saas.Core.Code.Caching
             }
         }
 
+        // clears entire cache
+
+        public void Clear()
+        {
+            // only host is allowed to clear entire cache
+
+            if (!_currentUser.IsHost) return;
+
+            lock (locker)
+            {
+                foreach (var usedKey in UsedKeys)
+                    _memoryCache.Remove(usedKey);
+
+                UsedKeys.Clear();
+            }
+        }
+
         // add to cache
 
         private void Add(string key, object value, DateTimeOffset expiration)
@@ -127,4 +373,7 @@ namespace Ich.Saas.Core.Code.Caching
 
         #endregion
     }
+
+    #endregion
+
 }
