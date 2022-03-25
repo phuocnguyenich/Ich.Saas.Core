@@ -1,10 +1,9 @@
 ﻿using Ich.Saas.Core.Code.Extensions;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Ich.Saas.Core.Code.Identity
 {
@@ -57,8 +56,9 @@ namespace Ich.Saas.Core.Code.Identity
         private string GetClaim(string name)
         {
             var claims = _httpContextAccessor.HttpContext.User.Claims.Where(c => c.Type == name);
-            if (claims != null && claims.Any())
-                return claims.First().Value;
+            var enumerable = claims as Claim[] ?? claims.ToArray();
+            if (enumerable.Any())
+                return enumerable.First().Value;
 
             return null;
         }
