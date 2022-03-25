@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace Ich.Saas.Core.Code.Identity
 
         // ** Factory Method Pattern
 
-        public async override Task<ClaimsPrincipal> CreateAsync(IdentityUser appUser)
+        public override async Task<ClaimsPrincipal> CreateAsync(IdentityUser appUser)
         {
             try
             {
@@ -46,29 +45,37 @@ namespace Ich.Saas.Core.Code.Identity
 
                 // Add Tenant claims
 
-                identity.AddClaim(new Claim(ClaimTypes.TenantId, tenant.Id.ToString()));
-                identity.AddClaim(new Claim(ClaimTypes.TenantName, tenant.Name));
-                identity.AddClaim(new Claim(ClaimTypes.Color, tenant.Color));
-                identity.AddClaim(new Claim(ClaimTypes.CurrencySymbol, symbol));
+                if (identity != null)
+                {
+                    identity.AddClaim(new Claim(ClaimTypes.TenantId, tenant.Id.ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.TenantName, tenant.Name));
+                    identity.AddClaim(new Claim(ClaimTypes.Color, tenant.Color));
+                    identity.AddClaim(new Claim(ClaimTypes.CurrencySymbol, symbol));
 
-                // Add User claims
+                    // Add User claims
 
-                identity.AddClaim(new Claim(ClaimTypes.UserId, user.Id.ToString()));
-                identity.AddClaim(new Claim(ClaimTypes.FirstName, user.FirstName));
-                identity.AddClaim(new Claim(ClaimTypes.LastName, user.LastName));
-                identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
+                    identity.AddClaim(new Claim(ClaimTypes.UserId, user.Id.ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.FirstName, user.FirstName));
+                    identity.AddClaim(new Claim(ClaimTypes.LastName, user.LastName));
+                    identity.AddClaim(new Claim(ClaimTypes.Email, user.Email));
 
-                // Add Culture claims
+                    // Add Culture claims
 
-                identity.AddClaim(new Claim(ClaimTypes.CurrencyId, tenant.CurrencyId.ToString()));
-                identity.AddClaim(new Claim(ClaimTypes.TimeZoneId, (user.TimeZoneId ?? Math.Max(1, tenant.TimeZoneId)).ToString()));
-                identity.AddClaim(new Claim(ClaimTypes.LocaleId, (user.LocaleId ?? Math.Max(1, tenant.LocaleId)).ToString()));
-                identity.AddClaim(new Claim(ClaimTypes.LanguageId, (user.LanguageId ?? Math.Max(1, tenant.LanguageId)).ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.CurrencyId, tenant.CurrencyId.ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.TimeZoneId,
+                        (user.TimeZoneId ?? Math.Max(1, tenant.TimeZoneId)).ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.LocaleId,
+                        (user.LocaleId ?? Math.Max(1, tenant.LocaleId)).ToString()));
+                    identity.AddClaim(new Claim(ClaimTypes.LanguageId,
+                        (user.LanguageId ?? Math.Max(1, tenant.LanguageId)).ToString()));
 
-                // Add .NET Localization claims
+                    // Add .NET Localization claims
 
-                identity.AddClaim(new Claim(ClaimTypes.TimeZoneName, _cache.TimeZones[user.TimeZoneId ?? tenant.TimeZoneId].Name));
-                identity.AddClaim(new Claim(ClaimTypes.LocaleName, _cache.Locales[user.LocaleId ?? tenant.LocaleId].Name));
+                    identity.AddClaim(new Claim(ClaimTypes.TimeZoneName,
+                        _cache.TimeZones[user.TimeZoneId ?? tenant.TimeZoneId].Name));
+                    identity.AddClaim(new Claim(ClaimTypes.LocaleName,
+                        _cache.Locales[user.LocaleId ?? tenant.LocaleId].Name));
+                }
 
                 return principal;
 
