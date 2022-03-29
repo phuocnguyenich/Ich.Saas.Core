@@ -1,0 +1,102 @@
+﻿<div class="main-menu">
+    <div class="">
+        <div class="d-flex">
+            <div class="pt-2 pr-25">
+                <a href="/"><img src="~/images/logo.png" /></a>
+            </div>
+            <div>
+                @if (CurrentUser.IsUser || CurrentUser.IsAdmin)
+                {
+                    <ul class="nav nav-menu">
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Students" ? "active" : "")' href="/students">@Localizer["Students"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Enrollments" ? "active" : "")' href="/enrollments">@Localizer["Enrollments"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Classes" ? "active" : "")' href="/classes">@Localizer["Classes"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Courses" ? "active" : "")' href="/courses">@Localizer["Courses"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Instructors" ? "active" : "")' href="/instructors">@Localizer["Instructors"]</a></li>
+                        @if (CurrentUser.IsAdmin)
+                        {
+                            <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Summary" ? "active" : "")' href="/summary">@Localizer["Summary"]</a></li>
+                            <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Setup" ? "active" : "")' href="/setup">@Localizer["Setup"]</a></li>
+                        }
+                    </ul>
+                }
+                else if (CurrentUser.IsHost)
+                {
+                    <ul class="nav nav-menu" role="tablist">
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Welcome" ? "active" : "")' href="/">@Localizer["Home"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Tenants" ? "active" : "")' href="/tenants">@Localizer["Tenants"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Errors" ? "active" : "")' href="/errors">@Localizer["Errors"]</a></li>
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Admin" ? "active" : "")' href="/admin">@Localizer["Admin"]</a></li>
+                    </ul>
+                }
+            </div>
+
+            <div class="ml-auto pr-10">
+
+                @if (!CurrentUser.IsAuthenticated)
+                {
+                    <ul class="nav nav-menu" role="tablist">
+                        <li class='nav-item'><a class='nav-link @(ViewBag.Menu == "Login" ? "active" : "")' href="/login">@Localizer["Login"]</a></li>
+                    </ul>
+                }
+                else
+                {
+                    <div class="d-flex">
+
+                        @if (!CurrentUser.IsHost)
+                        {
+                            <div class="d-none d-xl-block">
+
+                                <form action="/search">
+
+                                    <input type="hidden" id="search-type" name="SearchType" value='@(ViewBag.SearchType ?? "All")' />
+
+                                    <div class="input-group width-250 pt-3">
+                                        <button type="button" class="btn btn-light btn-search dropdown-toggle" data-toggle="dropdown">@(ViewBag.SearchTypeLocalized ?? Localizer["All"])&nbsp; <span class="caret"></span></button>
+                                        <div class="dropdown-menu">
+                                            <a class='dropdown-item js-dropdown-item' data-type="All" href="#">@Localizer["All"]</a>
+                                            <a class='dropdown-item js-dropdown-item' data-type="Students" href="#">@Localizer["Students"]</a>
+                                            <a class='dropdown-item js-dropdown-item' data-type="Enrollments" href="#">@Localizer["Enrollments"]</a>
+                                            <a class='dropdown-item js-dropdown-item' data-type="Classes" href="#">@Localizer["Classes"]</a>
+                                            <a class='dropdown-item js-dropdown-item' data-type="Courses" href="#">@Localizer["Courses"]</a>
+                                            <a class='dropdown-item js-dropdown-item' data-type="Instructors" href="#">@Localizer["Instructors"]</a>
+                                        </div>
+
+                                        <input placeholder='@Localizer["Search"]...' class="form-control search-area-input" type="text" name="q" value="@ViewBag.q" />
+                                    </div>
+                                </form>
+                            </div>
+                        }
+
+                        <div class="dropdown">
+                            <a class="avatar-wrapper" data-toggle="dropdown" href="javascript:void(0);">
+                                <div class="avatar">@CurrentUser.FirstName.Substring(0, 1)</div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item disabled pl-5" href="/account">
+                                    <div class="d-flex px-10">
+                                        <div class="p-12 pr-10">
+                                            <div class="avatar">@CurrentUser.FirstName.Substring(0, 1)</div>
+                                        </div>
+                                        <div class="pt-10">
+                                            <div>@CurrentUser.FirstName</div>
+                                            <div class="font-12">@CurrentUser.Email</div>
+                                        </div>
+
+                                    </div>
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/account">@Localizer["My Account"]</a>
+
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/logout">@Localizer["Logout"]</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

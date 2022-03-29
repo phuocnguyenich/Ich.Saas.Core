@@ -1,0 +1,99 @@
+@model Ich.Saas.Core.Areas.Auth.Login
+@{
+    ViewBag.Title = "Login";
+}
+
+<div class="row page mt-40">
+    <div class="col-4">
+        <div class="pt-10">
+            @if (Model.ReturnUrl != null)
+            {
+                <div>Login is required to view data.</div>
+            }
+
+            <h4 class="pt-20">Login</h4>
+
+            <form method="post" asp-antiforgery="true">
+
+                <div class="pr-lg-50">
+
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <div class="pt-15">
+                        <input type="text" asp-for="Email" class="form-control" placeholder="Email" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                    <div class="pt-10">
+                        <input type="password" asp-for="Password" class="form-control" placeholder="Password" />
+                        <span asp-validation-for="Password"></span>
+                    </div>
+                    <div class="pt-15">
+                        <input id="login-button" class="btn btn-dark btn-sm" type="submit" value="Log in" />
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="col-8">
+
+        <div class="row">
+            <div class="col-11 pl-30 py-10 font-weight-bold">
+                To quickly login, click on any of the tenant/user cards below.
+            </div>
+        </div>
+
+        <div class="py-20 px-15 mr-30">
+
+            @foreach (var user in Model.Users)
+            {
+                @await Html.PartialAsync("_User", user)
+            }
+
+        </div>
+    </div>
+</div>
+
+<br /><br />
+
+@section Scripts {
+
+    <script type="text/javascript">
+    
+        // ** namespace pattern
+        // ** revealing module pattern
+        // ** singleton pattern
+
+        Ich.namespace("Local").Page = (function () {
+
+            var start = function () {
+
+                // This injects credentials in proper controls
+
+                $('.login-box').on('click', function () {
+      
+                    $('#Email').val($(this).data('email'));
+                    $('#Password').val($(this).data('pwd'));
+
+                    $('#login-button').addClass('disabled').attr("disabled", true);
+
+                    $('form').submit();
+                });
+            };
+
+            // the revealing part of the revealing module pattern
+            return { start: start };
+        })();
+
+
+        $(function () {
+            Ich.Local.Page.start();
+        });
+    </script>
+}
+
+
+
+

@@ -27,6 +27,7 @@ namespace Ich.Saas.Core.Code.Identity
     }
 
     #endregion
+    
     #region Implementation
 
     public class CurrentUser : ICurrentUser
