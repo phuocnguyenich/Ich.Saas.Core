@@ -1,0 +1,13 @@
+@using System.Globalization
+@using Ich.Saas.Core.Code.Caching
+@using Ich.Saas.Core.Code.Localization
+@using Ich.Saas.Core.Code.Identity
+@using Ich.Saas.Core.Code.Pagination
+@using Microsoft.Extensions.Localization
+
+@inject ICache Cache
+@inject ICurrentUser CurrentUser
+@inject IStringLocalizer<SharedResources> Localizer
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@addTagHelper *, Ich.Saas.Core

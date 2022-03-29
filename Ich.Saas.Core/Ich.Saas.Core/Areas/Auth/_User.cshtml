@@ -1,0 +1,27 @@
+@model Ich.Saas.Core.Areas.Auth._User
+
+<div class="row login-box" data-email="@Model.Email" data-pwd="@Model.Password" 
+     style='border-left:6px solid @Model.Color;
+     @(Model.UserId == 1 ? "background: repeating-linear-gradient(45deg,#fff,#fff 10px,#f6f6f6 10px,#f6f6f6 20px)" : "");'>
+
+    <div class="col-6">
+        <table class="login-table">
+            <tr><td>Tenant</td><td class="font-weight-bold">@Model.Tenant</td></tr>
+            <tr><td>User</td><td>@Model.User</td></tr>
+            <tr><td>Email</td><td>@Model.Email</td></tr>
+            <tr><td>Password</td><td>@Model.Password</td></tr>
+            <tr><td>Role</td><td>@Model.Role</td></tr>
+        </table>
+    </div>
+
+    <div class="col-6">
+        <table class="login-table">
+            <tr><td>Time Zone</td><td>@Model.TimeZone</td></tr>
+            <tr><td>Currency</td><td>@Model.Currency</td></tr>
+            <tr><td>Language</td><td>@Model.Language</td></tr>
+            <tr><td>Locale</td><td>@Model.Locale</td></tr>
+        </table>
+    </div>
+</div>
+
+<br />

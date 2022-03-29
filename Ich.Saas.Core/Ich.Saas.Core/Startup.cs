@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ich.Saas.Core.Code.FlatAreas;
+using Ich.Saas.Core.Code.Localization;
 
 namespace Ich.Saas.Core
 {
@@ -48,6 +50,9 @@ namespace Ich.Saas.Core
 
             services.AddHttpContextAccessor();
 
+            // Custom string localization from database
+            services.AddStringLocalization();
+            
             // Database context: For localdb connectionString's path is calculated
             var connectionString = _config.GetConnectionString("Saas").Replace("{Path}", _env.ContentRootPath);
             
@@ -57,7 +62,10 @@ namespace Ich.Saas.Core
 
             services.AddControllersWithViews(options => {
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-            });
+            })
+                .AddDataAnnotationsLocalization()
+                .AddFlatAreas(new FlatAreaOptions())
+                .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
