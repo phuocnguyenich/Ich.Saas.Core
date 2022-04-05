@@ -1,3 +1,4 @@
+using AutoMapper;
 using Ich.Saas.Core.Code.Caching;
 using Ich.Saas.Core.Code.Identity;
 using Ich.Saas.Core.Code.Infrastructure;
@@ -5,7 +6,6 @@ using Ich.Saas.Core.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +13,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
+using System.Reflection;
 using Ich.Saas.Core.Code.FlatAreas;
 using Ich.Saas.Core.Code.Localization;
+using Microsoft.AspNetCore.Localization;
+using RequestCultureProvider = Ich.Saas.Core.Code.Localization.RequestCultureProvider;
 
 namespace Ich.Saas.Core
 {
     public class Startup
     {
-        public IConfiguration _config { get; }
+        private IConfiguration _config { get; }
         private IWebHostEnvironment _env { get; }
         public Startup(IConfiguration config, IWebHostEnvironment env)
         {
@@ -47,9 +48,28 @@ namespace Ich.Saas.Core
             services.AddIdentity<IdentityUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
-
+            
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = new PathString("/login");
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            });
+            
             services.AddHttpContextAccessor();
+            
+            // Configure localization, i.e cultures and uicultures
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("nl-NL") };
 
+                options.DefaultRequestCulture = new RequestCulture(culture: "en-US", uiCulture: "en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.RequestCultureProviders.Clear();
+                options.RequestCultureProviders.Insert(0, new RequestCultureProvider());
+            });
+            
             // Custom string localization from database
             services.AddStringLocalization();
             
@@ -66,6 +86,8 @@ namespace Ich.Saas.Core
                 .AddDataAnnotationsLocalization()
                 .AddFlatAreas(new FlatAreaOptions())
                 .AddRazorRuntimeCompilation();
+
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,6 +111,7 @@ namespace Ich.Saas.Core
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

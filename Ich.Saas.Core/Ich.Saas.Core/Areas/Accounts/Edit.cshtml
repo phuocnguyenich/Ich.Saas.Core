@@ -1,0 +1,42 @@
+@model Ich.Saas.Core.Areas.Accounts.Edit
+@{
+    ViewBag.Title = Localizer["Edit"] + " " + Localizer["Account"];
+}
+
+<div class="page-box">
+    <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-settings"></i></a> @Localizer["My Account"]</div>
+    <div class="page-box-name">@CurrentUser.FirstName @CurrentUser.LastName </div>
+</div>
+
+<div class="edit-title">@Localizer["Edit"] @Localizer["Account"]</div>
+
+<form method="post">
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Referer" />
+
+    <div class="edit-pane">
+        <div class="row edit-pane-row ">
+
+            <div class="col-12 col-md-5">
+                <inputTextBox value="FirstName" label="First Name"></inputTextBox>
+                <inputTextBox value="LastName" label="Last Name"></inputTextBox>
+                <inputTextBox value="Email" label="Email"></inputTextBox>
+            </div>
+
+            <div class="col-12 col-md-7">
+                <inputDropDown value="TimeZoneId" label="Time Zone" items="Lookup.TimeZoneItems"></inputDropDown>
+                <inputDropDown value="LocaleId" label="Locale" items="Lookup.LocaleItems"></inputDropDown>
+                <inputDropDown value="LanguageId" label="Language" items="Lookup.LanguageItems"></inputDropDown>
+            </div>
+
+        </div>
+    </div>
+    <div class="button-bar mb-80">
+        <input type="submit" class="btn btn-light btn-sm" value='@Localizer["Save"]' />&nbsp;&nbsp;
+        <a class="btn btn-light btn-sm" href="javascript:history.back()">@Localizer["Cancel"]</a>
+    </div>
+
+</form>
+
+
