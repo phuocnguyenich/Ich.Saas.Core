@@ -41,5 +41,14 @@ namespace Ich.Saas.Core.Code.Extensions
             map.ForMember(selector, memberOptions);
             return map;
         }
+        
+        // FROM: http://stackoverflow.com/a/16808867/5561153
+
+        public static IMappingExpression<TSource, TDestination> Ignore<TSource, TDestination>(
+            this IMappingExpression<TSource, TDestination> map, Expression<Func<TDestination, object>> selector)
+        {
+            map.ForMember(selector, config => config.Ignore());
+            return map;
+        }
     }
 }

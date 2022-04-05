@@ -1,0 +1,56 @@
+@model Ich.Saas.Core.Areas.Tenants.Detail
+@{
+    ViewBag.Title = @Localizer["Tenant"] + " " + @Localizer["Detail"];
+}
+
+<div class="page-box d-flex">
+    <div class="">
+        <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-globe"></i></a> @Localizer["Tenant"]</div>
+        <div class="page-box-name">@Model.Name</div>
+    </div>
+    <div class="ml-auto">
+        <div class="page-box-buttons">
+            <a class="btn btn-sm btn-light @(Model.Id == CurrentTenant.Id ? "disabled" : "") js-edit" href="/tenants/edit/@Model.Id">@Localizer["Edit"]</a>&nbsp;&nbsp;
+            <a class="btn btn-sm btn-light @(Model.Id == CurrentTenant.Id ? "disabled" : "") js-delete" href="/tenants/delete" data-return-url="/tenants" data-id="@Model.Id" related-count="@Model.TotalUsers" related-message='@Localizer["Tenants with users"]<br />@Localizer["cannot be deleted"].'>@Localizer["Delete"]</a>&nbsp;&nbsp;
+        </div>
+    </div>
+</div>
+
+<div class="tabs">
+    <ul class="nav nav-tabs nav-tabs-related">
+        <li class='nav-item'><a class="nav-link active" data-toggle="tab" href="#details">@Localizer["Details"]</a></li>
+    </ul>
+</div>
+
+<div class="tab-content mb-100">
+
+    <div class="tab-pane active" id="details">
+        <div class="tab-pane-row row">
+
+            <div class="col-12 col-md-6">
+                <outputField value="Name"></outputField>
+                <outputField value="Description"></outputField>
+                <outputField value="ContactPerson"></outputField>
+                <outputField value="ContactEmail"></outputField>
+                <outputCheckBox value="IsActive"></outputCheckBox>
+                <outputField value="CreatedDate"></outputField>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <div class="form-group row">
+                    <label class="col-sm-3 col-form-label">Color</label>
+                    <div class="col-sm-9 col-form-text">
+                        <div style="width:30px;height:22px;background:@Model.Color"></div>
+                    </div>
+                </div>
+                <outputField value="TimeZone"></outputField>
+                <outputField value="Locale"></outputField>
+                <outputField value="Language"></outputField>
+                <outputField value="Currency"></outputField>
+                <outputField value="TotalUsers"></outputField>
+            </div>
+        </div>
+    </div>
+</div>
+
+
