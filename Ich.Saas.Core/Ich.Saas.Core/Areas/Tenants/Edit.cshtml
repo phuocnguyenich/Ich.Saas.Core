@@ -1,0 +1,51 @@
+@model Ich.Saas.Core.Areas.Tenants.Edit
+@{
+    var title = Model.Id == 0 ? Localizer["New tenant"] : Localizer["Edit tenant"];
+    ViewBag.Title = title;
+}
+
+<form method="post" asp-antiforgery="true">
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Referer" />
+
+    <div class="page-box">
+        <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-globe"></i></a> Tenant</div>
+        <div class="page-box-name">@Model.Name</div>
+    </div>
+
+    <div class="edit-title">@title</div>
+
+    <div class="edit-pane">
+        <div class="row edit-pane-row ">
+
+            <div class="col-12 col-md-6">
+                <inputTextBox value="Name"></inputTextBox>
+                <inputTextArea value="Description"></inputTextArea>
+                <inputTextBox value="ContactPerson"></inputTextBox>
+                <inputTextBox value="ContactEmail"></inputTextBox>
+                <inputCheckBox value="IsActive"></inputCheckBox>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <inputTextBox value="Color"></inputTextBox>
+                <inputDropDown value="TimeZoneId" items="Lookup.TimeZoneItems"></inputDropDown>
+                <inputDropDown value="LocaleId" items="Lookup.LocaleItems"></inputDropDown>
+                <inputDropDown value="LanguageId" items="Lookup.LanguageItems"></inputDropDown>
+                <inputDropDown value="CurrencyId" items="Lookup.CurrencyItems"></inputDropDown>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="button-bar">
+        <input type="submit" class="btn btn-sm btn-light" value='@Localizer["Save"]' />&nbsp;&nbsp;
+        <a class="btn btn-sm btn-light" href="@Model.Referer">@Localizer["Cancel"]</a>
+    </div>
+
+</form>
+
+<br />
+<br />
+<br />
+<br />

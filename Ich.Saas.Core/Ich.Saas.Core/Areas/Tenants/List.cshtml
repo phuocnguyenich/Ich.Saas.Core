@@ -1,0 +1,70 @@
+@model Ich.Saas.Core.Areas.Tenants.List
+@{
+    ViewBag.Title = Localizer["Tenants"];
+}
+
+<form>
+
+    <input asp-for="Page" type="hidden" />
+    <input asp-for="Sort" type="hidden" />
+
+    <div class="page-box">
+        <div class="page-box-icon"><a href="/tenants"><i class="icon-globe"></i></a> @Localizer["Tenants"]</div>
+        
+        <div class="d-flex">
+            <div class=" page-box-filter">
+                <select asp-for="Filter" asp-items="Filter.TenantItems" class="form-control width-240"></select>
+            </div>
+            <div class=" page-box-items">@Model.TotalRows &nbsp;@Localizer["Items"]</div>
+            <div class="ml-auto page-box-new-button"><a class="btn btn-sm btn-light" href="/tenants/edit"> @Localizer["New"] </a></div>
+        </div>
+
+    </div>
+
+    <table class="table table-hover table-sm table-list">
+        <tr>
+            <th><a sort="Name">Name</a></th>
+            <th><a sort="ContactPerson">Contact</a></th>
+            <th><a sort="ContactEmail">Email</a></th>
+            <th><a sort="CreatedDate">CreatedDate</a></th>
+            <th><a sort="TotalUsers">TotalUsers</a></th>
+            <th><a sort="IsActive">Active</a></th>
+
+            <th>&nbsp;</th>
+        </tr>
+
+        @if (Model.Items.Count() == 0)
+        {
+            <tr><td colspan="7" class="no-items">@Localizer["No items to display"]</td></tr>
+        }
+
+
+        @foreach (var tenant in Model.Items)
+        {
+            <tr>
+                <td><a class="table-list-link" href="/tenants/@tenant.Id">@tenant.Name</a></td>
+                <td>@tenant.ContactPerson</td>
+                <td>@tenant.ContactEmail</td>
+                <td>@tenant.CreatedDate</td>
+                <td>@tenant.TotalUsers</td>
+                <td><input type="checkbox" asp-for="@tenant.IsActive" disabled='disabled' /></td>
+                <td class='text-right'>
+                    <a class='btn btn-xs btn-light @(tenant.Id == CurrentTenant.Id ? "disabled" : "")' href="/tenants/edit/@tenant.Id">Edit</a>&nbsp;
+                    <a class="btn btn-xs btn-light @(tenant.Id == CurrentTenant.Id ? "disabled" : "") js-delete" href="/tenants/delete" data-id="@tenant.Id" related-count="@tenant.TotalUsers" related-message='@Localizer["Tenants with users"]<br />@Localizer["cannot be deleted"].'>@Localizer["Delete"]</a>&nbsp; &nbsp;
+                </td>
+            </tr>
+        }
+    </table>
+
+    @await Html.PartialAsync("_Pager")
+
+</form>
+
+<br />
+<br />
+<br />
+<br />
+
+
+
+

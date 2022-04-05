@@ -38,7 +38,9 @@ namespace Ich.Saas.Core
             // Caching
             services.AddMemoryCache(); // if already added AddControllersWithViews, don't need to AddMemoryCache
             services.AddScoped<ICache, Cache>();
-
+            services.AddScoped<IFilter, Filter>();
+            services.AddScoped<ILookup, Lookup>();
+            
             // Identity support
             services.AddSingleton<ICurrentTenant, CurrentTenant>();
             services.AddSingleton<ICurrentUser, CurrentUser>();
