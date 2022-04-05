@@ -1,0 +1,49 @@
+@model Ich.Saas.Core.Areas.Accounts.Detail
+@{
+    ViewBag.Title = Localizer["My Account"];
+}
+
+<div class="page-box d-flex">
+    <div class="">
+        <div class="page-box-icon"><i class="icon-settings"></i> @Localizer["My Account"]</div>
+        <div class="page-box-name">@CurrentUser.FirstName @CurrentUser.LastName</div>
+    </div>
+    <div class="ml-auto">
+        <div class="page-box-buttons">
+            <a class="btn btn-light btn-sm" href="/account/edit">@Localizer["Edit"]</a>&nbsp;&nbsp;
+        </div>
+    </div>
+</div>
+
+<div class="tabs">
+    <ul class="nav nav-tabs nav-tabs-related">
+        <li class='nav-item'><a class="nav-link active" data-toggle="tab" href="#details">@Localizer["Details"]</a></li>
+    </ul>
+</div>
+
+<div class="tab-pane active" id="details">
+    <div class="tab-pane-row row">
+
+        <div class="col-12 col-md-6">
+            <outputField value="FirstName"></outputField>
+            <outputField value="LastName"></outputField>
+            <outputField value="Email"></outputField>
+            <outputField value="CreatedDate"></outputField>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <outputField value="TimeZone"></outputField>
+            <outputField value="Locale"></outputField>
+            <outputField value="Language"></outputField>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label">@Localizer["Password"]</label>
+                <div class="col-sm-7 d-flex">
+                    <div class="pt-6 pr-30 font-18">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</div>
+                    <div class=""><a class="btn btn-sm btn-light" href="/account/password">@Localizer["Change"]</a></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using Ich.Saas.Core.Code.Caching;
+﻿using AutoMapper;
+using Ich.Saas.Core.Code.Caching;
 using Ich.Saas.Core.Code.Identity;
 using Ich.Saas.Core.Code.Localization;
 using Ich.Saas.Core.Domain;
@@ -16,6 +17,7 @@ namespace Ich.Saas.Core.Code
         // ** Lazy Injection pattern
 
         private ICache cache;
+        private IMapper mapper;
         private SaaSContext db;
         private ICurrentUser currentUser;
         private ICurrentTenant currentTenant;
@@ -24,6 +26,7 @@ namespace Ich.Saas.Core.Code
         private IStringLocalizer<SharedResources> localizer;
 
         protected ICache _cache => cache ??= HttpContext.RequestServices.GetService<ICache>();
+        protected IMapper _mapper => mapper ??= HttpContext.RequestServices.GetService<IMapper>();
         protected SaaSContext _db => db ??= HttpContext.RequestServices.GetService<SaaSContext>();
         protected ICurrentUser _currentUser => currentUser ??= HttpContext.RequestServices.GetService<ICurrentUser>();
         protected ICurrentTenant _currentTenant => currentTenant ??= HttpContext.RequestServices.GetService<ICurrentTenant>();

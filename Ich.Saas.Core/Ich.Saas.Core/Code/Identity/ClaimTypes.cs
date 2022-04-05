@@ -6,26 +6,26 @@
     {
         // Tenant claim types
 
-        public const string TenantId = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/tenantid";
-        public const string TenantName = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/tenantname";
-        public const string Color = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/color";
-        public const string CurrencySymbol = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/currencysymbol";
+        public const string TenantId = "tenantid";
+        public const string TenantName = "tenantname";
+        public const string Color = "color";
+        public const string CurrencySymbol = "currencysymbol";
 
         // User claim types
 
-        public const string UserId = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/userid";
-        public const string FirstName = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/firstname";
-        public const string LastName = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/lastname";
-        public const string Email = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/email";
+        public const string UserId = "userid";
+        public const string FirstName = "firstname";
+        public const string LastName = "lastname";
+        public const string Email = "email";
 
         // Culture claim types
 
-        public const string LocaleName = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/localename";
-        public const string TimeZoneName = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/timezonename";
+        public const string LocaleName = "localename";
+        public const string TimeZoneName = "timezonename";
 
-        public const string CurrencyId = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/currencyid";
-        public const string TimeZoneId = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/timezoneid";
-        public const string LocaleId = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/localeid";
-        public const string LanguageId = "https://schemas.prouniversity.org/ws/2009/09/identity/claims/languageid";
+        public const string CurrencyId = "currencyid";
+        public const string TimeZoneId = "timezoneid";
+        public const string LocaleId = "localeid";
+        public const string LanguageId = "languageid";
     }
 }
