@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Ich.Saas.Core.Code.Identity;
 using Ich.Saas.Core.Code.Localization;
 using Ich.Saas.Core.Domain;
@@ -13,6 +14,11 @@ namespace Ich.Saas.Core.Code.Caching
         List<SelectListItem> LocaleItems { get; }
         List<SelectListItem> LanguageItems { get; }
         List<SelectListItem> CurrencyItems { get; }
+        List<SelectListItem> StudentTotalEnrollmentItems { get; }
+        List<SelectListItem> StudentCityItems { get; }
+        List<SelectListItem> StudentCountryItems { get; }
+        List<SelectListItem> CountryItems { get; }
+        List<SelectListItem> GenderItems { get; }
     }
 
     public class Lookup : ILookup
@@ -85,6 +91,77 @@ namespace Ich.Saas.Core.Code.Caching
                 list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
                 foreach (var currency in _cache.Currencies.Values)
                     list.Add(new SelectListItem { Value = currency.Id.ToString(), Text = currency.Name });
+
+                return list;
+            }
+        }
+
+        public List<SelectListItem> StudentTotalEnrollmentItems
+        {
+            get
+            {
+                var list = new List<SelectListItem> {new SelectListItem { Value = null, Text = _localizer["-- Select --"], Selected = true }};
+                
+                for (int i = 0; i < 11; i++)
+                    list.Add(new SelectListItem { Value = i.ToString(), Text = i.ToString() });
+
+                return list;
+            }
+        }
+
+        public List<SelectListItem> StudentCityItems
+        {
+            get
+            {
+                var list = new List<SelectListItem> {new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true }};
+
+                var cities = _db.Student.Where(s => s.TenantId == _currentTenant.Id).Select(s => s.City).Distinct();
+
+                foreach (var city in cities)
+                    list.Add(new SelectListItem { Value = city, Text = city });
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> StudentCountryItems
+        {
+            get
+            {
+                var list = new List<SelectListItem> {new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true }};
+
+                var countries = _db.Student.Where(s => s.TenantId == _currentTenant.Id).Select(s => new { s.CountryId, s.Country } ).Distinct();
+
+                foreach (var country in countries)
+                    list.Add(new SelectListItem { Value = country.CountryId.ToString(), Text = country.Country });
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> GenderItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true },
+                    new SelectListItem { Value = "Male", Text = _localizer["Male"] },
+                    new SelectListItem { Value = "Female", Text = _localizer["Female"] }
+                };
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> CountryItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
+                foreach (var country in _cache.Countries.Values)
+                    list.Add(new SelectListItem { Value = country.Id.ToString(), Text = country.Name });
 
                 return list;
             }

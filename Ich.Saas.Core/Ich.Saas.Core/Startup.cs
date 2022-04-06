@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Globalization;
 using System.Reflection;
+using Ich.Saas.Core.Code.Database;
 using Ich.Saas.Core.Code.FlatAreas;
 using Ich.Saas.Core.Code.Localization;
 using Microsoft.AspNetCore.Localization;
@@ -40,6 +41,7 @@ namespace Ich.Saas.Core
             services.AddScoped<ICache, Cache>();
             services.AddScoped<IFilter, Filter>();
             services.AddScoped<ILookup, Lookup>();
+            services.AddScoped<IRollup, Rollup>();
             
             // Identity support
             services.AddSingleton<ICurrentTenant, CurrentTenant>();

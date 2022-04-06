@@ -1,0 +1,141 @@
+﻿@model Ich.Saas.Core.Areas.Students.List
+@{
+    ViewBag.Title = Localizer["Students"];
+}
+
+<form>
+
+    <input asp-for="Page" type="hidden" />
+    <input asp-for="Sort" type="hidden" />
+    <input asp-for="AdvancedFilter" type="hidden" />
+
+    <div class="page-box">
+
+        <div class="d-flex" >
+            <div class="page-box-icon"><a href="/students"><i class="icon-people"></i></a> @Localizer["Students"]</div>
+            <div class="ml-auto page-box-new-button-top">
+                <a class="btn btn-sm btn-light" href="/students/edit"> @Localizer["New"] </a>
+            </div>
+            <div class="btn-group filter-buttons" data-toggle="buttons">
+                <button type="button" class='standard-toggle btn btn-sm btn-light @(Model.AdvancedFilter ? "" : "active" )' title='@Localizer["Standard Filter"]'><i class="icon-list"></i></button>
+                <button type="button" class='advanced-toggle btn btn-sm btn-light @(Model.AdvancedFilter ? "active" : "" )' title='@Localizer["Advanced Filter"]'><img src="/images/filter.gif" /></button>
+            </div>
+        </div>
+
+        <div id="standard-filter" style='display:@(Model.AdvancedFilter ? "none" : "block")'>
+
+            <div class="d-flex">
+                <div class="page-box-filter">
+                    <select asp-for="Filter" asp-items="Filter.StudentItems" class="form-control width-240"></select>
+                </div>
+                <div class="page-box-items">@Model.TotalRows &nbsp;@Localizer["Items"]</div>
+            </div>
+
+        </div>
+
+        <div id="advanced-filter" style='display:@(Model.AdvancedFilter ? "block" : "none")'>
+
+            <div class="row mt-17">
+                <div class="col-4">
+                    <div class="form-group row">
+                        <label for="City" class="col-sm-3 col-form-label text-right">@Localizer["City"]</label>
+                        <div class="col-sm-9">
+                            <select asp-for="City" asp-items="Lookup.StudentCityItems" class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-5">
+                    <div class="form-group row">
+                        <label for="BirthDate" class="col-sm-4 col-form-label text-right">@Localizer["BirthDate"]</label>
+                        <div class="col-sm-8 ">
+                            <table>
+                                <tr>
+                                    <td style="width:45%"><input asp-for="BirthDayFrom" type="text" class="form-control js-date-picker" placeholder='@Localizer["From"]' /></td>
+                                    <td style="width:10%">&nbsp;&nbsp;-</td>
+                                    <td style="width:45%"><input asp-for="BirthDayThru" type="text" class="form-control js-date-picker" placeholder='@Localizer["Thru"]' /></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="page-box-items-advanced">@Model.TotalRows &nbsp;@Localizer["Items"]</div>
+                </div>
+            </div>
+
+            <div class="row mt-10 mb-15">
+                <div class="col-4">
+                    <div class="form-group row">
+                        <label for="CountryId" class="col-sm-3 col-form-label text-right">@Localizer["Country"]</label>
+                        <div class="col-sm-9">
+                            <select asp-for="CountryId" asp-items="Lookup.StudentCountryItems" class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="form-group row">
+                        <label for="TotalEnrollments" class="col-sm-4 col-form-label text-right">@Localizer["Enrollments"]</label>
+                        <div class="col-sm-8">
+                            <select asp-for="TotalEnrollments" asp-items="Lookup.StudentTotalEnrollmentItems" class="form-control width-120"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="pt-5">
+                        <button class="btn btn-light btn-sm js-filter" type="submit"> @Localizer["Filter"] </button>&nbsp;
+                        <a href="/students?AdvancedFilter=True" class="btn btn-light btn-sm"> @Localizer["Reset"] </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-hover table-sm table-list">
+        <tr>
+            <th><a sort="LastName">Name</a></th>
+            <th><a sort="Alias">Alias</a></th>
+            <th><a sort="Email">Email</a></th>
+            <th><a sort="City">City</a></th>
+            <th><a sort="Country">Country</a></th>
+            <th><a sort="BirthDate">BirthDate</a></th>
+            <th><a sort="TotalEnrollments">TotalEnrollments</a></th>
+            <th>&nbsp;</th>
+        </tr>
+
+        @if (Model.Items.Count() == 0)
+        {
+            <tr><td colspan="8" class="no-items">@Localizer["No items to display"]</td></tr>
+        }
+
+        @foreach (var student in Model.Items)
+        {
+            <tr>
+                <td><a class="table-list-link" href="/students/@student.Id?tab=enrollments">@student.FullName</a></td>
+                <td>@student.Alias</td>
+                <td>@student.Email</td>
+                <td>@student.City</td>
+                <td>@student.Country</td>
+                <td>@student.BirthDate</td>
+                <td><a class="table-list-link" href="/enrollments?StudentId=@(student.Id)&AdvancedFilter=True">&nbsp;@student.TotalEnrollments</a></td>
+
+                <td class='text-right'>
+                    <a class="btn btn-xs btn-light" href="/students/edit/@student.Id">@Localizer["Edit"]</a>&nbsp;
+                    <a class="btn btn-xs btn-light js-delete" href="/students/delete" data-id="@student.Id" related-count="@student.TotalEnrollments" related-message='@Localizer["Students with enrollments"]<br />@Localizer["cannot be deleted"].'>@Localizer["Delete"]</a>&nbsp;
+                </td>
+            </tr>
+        }
+    </table>
+
+    @await Html.PartialAsync("_Pager")
+
+</form>
+
+<div class="height-60"></div>
+
+
+
+
+
+
+
