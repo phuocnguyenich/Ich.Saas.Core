@@ -11,6 +11,7 @@ namespace Ich.Saas.Core.Code.Caching
     {
         public List<SelectListItem> TenantItems { get; }
         public List<SelectListItem> ErrorItems { get; }
+        public List<SelectListItem> StudentItems { get; }
     }
 
     #endregion
@@ -64,7 +65,21 @@ namespace Ich.Saas.Core.Code.Caching
                 return list;
             }
         }
+        
+        public List<SelectListItem> StudentItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "0", Text = _localizer["All Students"], Selected = true },
+                    new SelectListItem { Value = "1", Text = _localizer["Enrolled Students"] },
+                    new SelectListItem { Value = "2", Text = _localizer["Non Enrolled Students"] }
+                };
 
+                return list;
+            }
+        }
         #endregion
     }
 

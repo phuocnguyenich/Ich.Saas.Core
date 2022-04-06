@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Ich.Saas.Core.Code.Caching;
+using Ich.Saas.Core.Code.Database;
 using Ich.Saas.Core.Code.Identity;
 using Ich.Saas.Core.Code.Localization;
 using Ich.Saas.Core.Domain;
@@ -18,6 +19,7 @@ namespace Ich.Saas.Core.Code
 
         private ICache cache;
         private IMapper mapper;
+        private IRollup rollup;
         private SaaSContext db;
         private ICurrentUser currentUser;
         private ICurrentTenant currentTenant;
@@ -27,6 +29,7 @@ namespace Ich.Saas.Core.Code
 
         protected ICache _cache => cache ??= HttpContext.RequestServices.GetService<ICache>();
         protected IMapper _mapper => mapper ??= HttpContext.RequestServices.GetService<IMapper>();
+        protected IRollup _rollup => rollup ??= HttpContext.RequestServices.GetService<IRollup>();
         protected SaaSContext _db => db ??= HttpContext.RequestServices.GetService<SaaSContext>();
         protected ICurrentUser _currentUser => currentUser ??= HttpContext.RequestServices.GetService<ICurrentUser>();
         protected ICurrentTenant _currentTenant => currentTenant ??= HttpContext.RequestServices.GetService<ICurrentTenant>();

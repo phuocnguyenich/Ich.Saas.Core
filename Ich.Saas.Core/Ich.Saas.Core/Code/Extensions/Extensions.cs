@@ -28,6 +28,16 @@ namespace Ich.Saas.Core.Code.Extensions
             return defaultInt;
         }
 
+        public static string ToCurrency(this decimal amount)
+        {
+            return string.Format("{0:C0}", amount).Replace("$ ", "$");
+        }
+        public static string ToDate(this DateTime? dt)
+        {
+            if (dt == null) return "";
+            return dt.Value.ToDate();
+        }
+        
         public static string ToDate(this DateTime dt)
         {
             return string.Format("{0:d}", dt);
@@ -57,6 +67,11 @@ namespace Ich.Saas.Core.Code.Extensions
             if (s.Length <= maxLength) return s;
 
             return s.Substring(0, maxLength) + "...";
+        }
+        
+        public static string Pluralize(this int count, string singular, string plural)
+        {
+            return count == 1 ? "1 " + singular : count.ToString() + " " + plural;
         }
     }
 }
