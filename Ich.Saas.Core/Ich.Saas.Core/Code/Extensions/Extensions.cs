@@ -50,5 +50,13 @@ namespace Ich.Saas.Core.Code.Extensions
             map.ForMember(selector, config => config.Ignore());
             return map;
         }
+
+        public static string Ellipsify(this string s, int maxLength)
+        {
+            if (string.IsNullOrEmpty(s)) return "";
+            if (s.Length <= maxLength) return s;
+
+            return s.Substring(0, maxLength) + "...";
+        }
     }
 }

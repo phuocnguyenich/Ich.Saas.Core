@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Ich.Saas.Core.Areas.Tenants
 {
     [Authorize]
+    [Menu("Tenants")]
     [Route("tenants")]
     public class TenantController : BaseController
     {
