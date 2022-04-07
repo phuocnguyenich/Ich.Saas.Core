@@ -73,5 +73,10 @@ namespace Ich.Saas.Core.Code.Extensions
         {
             return count == 1 ? "1 " + singular : count.ToString() + " " + plural;
         }
+
+        public static string FormatDate(this DateTime dt)
+        {
+            return dt.ToString("d");
+        }
     }
 }

@@ -1,0 +1,78 @@
+@model Ich.Saas.Core.Areas.Enrollments.Edit
+@{
+    var title = Model.Id == 0 ? Localizer["New enrollment"] : Localizer["Edit enrollment"];
+    ViewBag.Title = title;
+}
+
+<form method="post" asp-antiforgery="true">
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Referer" />
+
+    <div class="page-box">
+        <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-doc"></i></a> @Localizer["Enrollment"]</div>
+        <div class="page-box-name">@Model.EnrollNumber</div>
+    </div>
+
+    <div class="edit-title">@title</div>
+
+    <div class="edit-pane">
+        <div class="row edit-pane-row ">
+
+            <div class="col-12 col-md-6">
+                <outputSerial value="EnrollNumber"></outputSerial>
+                <inputDropDown value="StudentId" items="Lookup.StudentItems"></inputDropDown>
+                <inputDropDown value="ClassId" items="Lookup.ClassItems"></inputDropDown>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <inputDateBox value="EnrollDate"></inputDateBox>
+                <inputDropDown value="Status" items="Lookup.StatusItems"></inputDropDown>
+                <inputCurrencyBox value="AmountPaid"></inputCurrencyBox>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="button-bar">
+        <input type="submit" class="btn btn-sm btn-light" value='@Localizer["Save"]' />&nbsp;&nbsp;
+        <a class="btn btn-sm btn-light" href="@Model.Referer">@Localizer["Cancel"]</a>
+    </div>
+
+</form>
+
+<br />
+<br />
+<br />
+<br />
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        Ich.namespace("Local").Page = (function () {
+
+            var start = function () {
+                // 'form-control' is removed following an error.
+                // this ensures field is always formatted properly
+                $('#StudentId').addClass('form-control');
+            };
+
+            return { start: start };
+
+        })();
+
+        $(function () {
+            Ich.Local.Page.start();
+
+        });
+
+    </script>
+}
+
+
+
+
+
+
+

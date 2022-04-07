@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Ich.Saas.Core.Code.Extensions;
 using Ich.Saas.Core.Code.Identity;
 using Ich.Saas.Core.Code.Localization;
 using Ich.Saas.Core.Domain;
@@ -19,6 +20,10 @@ namespace Ich.Saas.Core.Code.Caching
         List<SelectListItem> StudentCountryItems { get; }
         List<SelectListItem> CountryItems { get; }
         List<SelectListItem> GenderItems { get; }
+        public List<SelectListItem> StudentItems { get; }
+        public List<SelectListItem> ClassItems { get; }
+        public List<SelectListItem> StatusItems { get; }
+        public List<SelectListItem> OptionalStatusItems { get; }
     }
 
     public class Lookup : ILookup
@@ -162,6 +167,67 @@ namespace Ich.Saas.Core.Code.Caching
                 list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
                 foreach (var country in _cache.Countries.Values)
                     list.Add(new SelectListItem { Value = country.Id.ToString(), Text = country.Name });
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> StudentItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
+
+                var students = _db.Student.Where(s => s.TenantId == _currentTenant.Id).OrderBy(s => s.LastName);
+                foreach (var student in students)
+                    list.Add(new SelectListItem { Value = student.Id.ToString(), Text = student.FullName });
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> ClassItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
+
+                var classes = _db.Class.Where(c => c.TenantId == _currentTenant.Id).OrderBy(c => c.Location);
+                foreach (var cls in classes)
+                    list.Add(new SelectListItem { Value = cls.Id.ToString(), Text = cls.Course + " -- " + cls.StartDate.FormatDate() });
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> StatusItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "Pending", Text = _localizer["Pending"], Selected = true },
+                    new SelectListItem { Value = "Paid", Text = _localizer["Paid"] },
+                    new SelectListItem { Value = "Canceled", Text = _localizer["Canceled"] }
+                };
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> OptionalStatusItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true },
+                    new SelectListItem { Value = "Pending", Text = _localizer["Pending"] },
+                    new SelectListItem { Value = "Paid", Text = _localizer["Paid"] },
+                    new SelectListItem { Value = "Canceled", Text = _localizer["Canceled"] }
+                };
 
                 return list;
             }
