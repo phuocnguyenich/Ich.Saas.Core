@@ -1,0 +1,102 @@
+@model Ich.Saas.Core.Areas.Enrollments.Detail
+@{
+    ViewBag.Title = @Localizer["Enrollment"] + " " + @Localizer["Detail"];
+}
+
+<div class="page-box d-flex">
+    <div class="">
+        <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-doc"></i></a> @Localizer["Enrollment"]</div>
+        <div class="page-box-name">@Model.EnrollNumber</div>
+    </div>
+    <div class=" d-flex">
+        <div class=" page-box-data-first">@Localizer["Student"]<br />@Model.Student</div>
+        <div class=" page-box-data">@Localizer["Title"]<br />@Model.Course</div>
+        <div class=" page-box-data">@Localizer["Location"]<br />@Model.Class</div>
+        <div class=" page-box-data">@Localizer["TotalQuizzes"]<br />@Model.TotalQuizzes</div>
+        <div class=" page-box-data-last">@Localizer["AverageGrade"]<br />@Model.AverageGrade</div>
+    </div>
+    <div class="ml-auto">
+        <div class="page-box-buttons">
+            <a class="btn btn-sm btn-light js-edit" href="/enrollments/edit/@Model.Id">@Localizer["Edit"]</a>&nbsp;&nbsp;
+            <a class="btn btn-sm btn-light js-delete" href="/enrollments/delete" data-return-url="/enrollments" data-id="@Model.Id" related-count="@Model.TotalQuizzes" related-message='@Localizer["Enrollments with quizzes"]<br />@Localizer["cannot be deleted"].'>@Localizer["Delete"]</a>&nbsp;&nbsp;
+        </div>
+    </div>
+</div>
+
+<div class="tabs">
+    <ul class="nav nav-tabs nav-tabs-related">
+        <li class='nav-item'><a class='nav-link @(Model.Tab == "details" ? "active" : "")' data-toggle="tab" href="#details">@Localizer["Details"]</a></li>
+        <li class='nav-item'><a class='nav-link @(Model.Tab == "quizzes" ? "active" : "")' data-toggle="tab" href="#quizzes">@Localizer["Quizzes"]</a></li>
+    </ul>
+</div>
+
+<div class="tab-content">
+
+    <div class='tab-pane @(Model.Tab == "details" ? "active" : "")' id="details">
+        <div class="tab-pane-row row">
+
+            <div class="col-12 col-md-6">
+                <outputField value="EnrollNumber"></outputField>
+                <outputField value="Student"></outputField>
+                <outputField value="Course"></outputField>
+                <outputField value="Class"></outputField>
+                <outputField value="EnrollDate"></outputField>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <outputField value="Status"></outputField>
+                <outputField value="Fee"></outputField>
+                <outputField value="AmountPaid"></outputField>
+                <outputField value="TotalQuizzes"></outputField>
+                <outputField value="AverageGrade"></outputField>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane @(Model.Tab == "quizzes" ? "active" : "")" id="quizzes">
+
+        <div class="d-flex bg-white py-10">
+            <div class=" tab-pane-heading">@(Model.Quizzes.Count.Pluralize(Localizer["Quiz"], Localizer["Quizzes"]))</div>
+            <div class="ml-auto pr-10">
+                <a class="btn btn-sm btn-light js-new-quiz" href="javascript:void(0);">@Localizer["New Quiz"]</a>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("_QuizList")
+
+    </div>
+</div>
+
+@await Html.PartialAsync("_QuizModal")
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        Ich.namespace("Local").Page = (function () {
+
+            var start = function () {
+
+                $('.js-new-quiz').on('click', function (e) {
+                    $('#QuizDate').val('');
+                    $('#Grade').val('');
+                    $('#modal-quiz').modal('show');
+
+                    return true;
+                });
+            };
+
+            return { start: start };
+
+        })();
+
+        $(function () {
+            Ich.Local.Page.start();
+
+        });
+
+    </script>
+}
+
+
