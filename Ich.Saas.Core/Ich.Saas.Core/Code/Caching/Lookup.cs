@@ -24,6 +24,8 @@ namespace Ich.Saas.Core.Code.Caching
         public List<SelectListItem> ClassItems { get; }
         public List<SelectListItem> StatusItems { get; }
         public List<SelectListItem> OptionalStatusItems { get; }
+        public List<SelectListItem> CourseItems { get; }
+        public List<SelectListItem> ClassLocationItems { get; }
     }
 
     public class Lookup : ILookup
@@ -228,6 +230,37 @@ namespace Ich.Saas.Core.Code.Caching
                     new SelectListItem { Value = "Paid", Text = _localizer["Paid"] },
                     new SelectListItem { Value = "Canceled", Text = _localizer["Canceled"] }
                 };
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> CourseItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
+
+                var courses = _db.Course.Where(c => c.TenantId == _currentTenant.Id).OrderBy(c => c.Title);
+                foreach (var course in courses)
+                    list.Add(new SelectListItem { Value = course.Id.ToString(), Text = course.Title });
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> ClassLocationItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>();
+                list.Add(new SelectListItem { Value = "", Text = _localizer["-- Select --"], Selected = true });
+
+                var locations = _db.Class.Where(c => c.TenantId == _currentTenant.Id).Select(c => c.Location).Distinct();
+
+                foreach (var location in locations)
+                    list.Add(new SelectListItem { Value = location, Text = location });
 
                 return list;
             }

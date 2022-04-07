@@ -10,6 +10,7 @@ namespace Ich.Saas.Core.Code.Database
     {
         Task RollupStudentAsync(Student student, int? tenantId);
         Task RollupEnrollmentAsync(Enrollment enrollment, int? tenantId);
+        Task RollupClassAsync(Class cls, int? tenantId);
     }
 
     #endregion
@@ -87,7 +88,30 @@ namespace Ich.Saas.Core.Code.Database
                         JOIN [Course] C ON (E.CourseId = C.Id AND E.TenantId = C.TenantId)
                         JOIN [Class] K ON (E.ClassId =  K.Id AND E.TenantId = K.TenantId)
                         WHERE E.TenantId = {tenantId} AND E.Id = {enrollment.Id}");
+            
+            
         }
+        
+        public async Task RollupClassAsync(Class cls, int? tenantId)
+        {
+            await _db.Database.ExecuteSqlInterpolatedAsync(
+                $@"UPDATE [Course] 
+                        SET TotalClasses = (SELECT COUNT(K.Id) 
+                                              FROM [Class] K 
+                                             WHERE K.CourseId = C.Id
+                                               AND K.TenantId = C.TenantId
+                                               AND K.TenantId = {tenantId})
+                       FROM [Course] C
+                      WHERE C.TenantId = {tenantId} AND C.Id = {cls.CourseId};");
+
+            await _db.Database.ExecuteSqlInterpolatedAsync(
+                $@"UPDATE [Enrollment] 
+                         SET [Enrollment].Class = K.Location 
+                        FROM [Enrollment] E
+                        JOIN [Class] K ON (E.ClassId =  K.Id AND E.TenantId = K.TenantId)
+                       WHERE E.TenantId = {tenantId} AND E.ClassId = {cls.Id};");
+        }
+        
     }
 
     #endregion

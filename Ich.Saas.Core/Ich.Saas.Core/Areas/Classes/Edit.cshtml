@@ -1,0 +1,42 @@
+@model Ich.Saas.Core.Areas.Classes.Edit
+@{
+    var title = Model.Id == 0 ? Localizer["New class"] : Localizer["Edit class"];
+    ViewBag.Title = title;
+}
+
+<form method="post" asp-antiforgery="true">
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Referer" />
+
+    <div class="page-box">
+        <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-calendar"></i></a> @Localizer["Class"]</div>
+        <div class="page-box-name">@Model.ClassNumber</div>
+    </div>
+
+    <div class="edit-title">@title</div>
+
+    <div class="edit-pane">
+        <div class="row edit-pane-row ">
+
+            <div class="col-12 col-md-6">
+                <outputSerial value="ClassNumber"></outputSerial>
+                <inputDropDown value="CourseId" items="Lookup.CourseItems"></inputDropDown>
+                <inputTextBox value="MaxEnrollments"></inputTextBox>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <inputDateBox value="StartDate"></inputDateBox>
+                <inputDateBox value="EndDate"></inputDateBox>
+                <inputTextBox value="Location"></inputTextBox>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="button-bar">
+        <input type="submit" class="btn btn-sm btn-light" value='@Localizer["Save"]' />&nbsp;&nbsp;
+        <a class="btn btn-sm btn-light" href="@Model.Referer">@Localizer["Cancel"]</a>
+    </div>
+
+</form>

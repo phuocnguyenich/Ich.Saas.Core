@@ -13,6 +13,7 @@ namespace Ich.Saas.Core.Code.Caching
         public List<SelectListItem> ErrorItems { get; }
         public List<SelectListItem> StudentItems { get; }
         public List<SelectListItem> EnrollmentItems { get; }
+        public List<SelectListItem> ClassItems { get; }
     }
 
     #endregion
@@ -91,6 +92,21 @@ namespace Ich.Saas.Core.Code.Caching
                     new SelectListItem { Value = "0", Text = _localizer["All Enrollments"], Selected = true },
                     new SelectListItem { Value = "1", Text = _localizer["Unpaid Enrollments"] },
                     new SelectListItem { Value = "2", Text = _localizer["Fully Paid Enrollments"] }
+                };
+
+                return list;
+            }
+        }
+        
+        public List<SelectListItem> ClassItems
+        {
+            get
+            {
+                var list = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "0", Text = _localizer["All Classes"], Selected = true },
+                    new SelectListItem { Value = "1", Text = _localizer["Max Students > 15"] },
+                    new SelectListItem { Value = "2", Text = _localizer["Enrolled Students > 2"] }
                 };
 
                 return list;
