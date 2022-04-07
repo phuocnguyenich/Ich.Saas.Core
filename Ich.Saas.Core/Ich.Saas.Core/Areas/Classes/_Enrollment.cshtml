@@ -1,0 +1,38 @@
+@model Ich.Saas.Core.Areas.Classes._Enrollment
+
+<div class="col-4">
+    <div class="bg-white pt-20 pb-15 my-15">
+        <table class="table table-noline">
+            <tr>
+                <td class="text-right w-40 border-0">@Localizer["Enrollment"]</td>
+                <td class="border-0"><a href="/enrollments/@Model.Id">@Model.EnrollNumber</a></td>
+            </tr>
+            <tr>
+                <td class="text-right">@Localizer["Student"]</td>
+                <td>@Model.Student</td>
+            </tr>
+            <tr>
+                <td class="text-right">@Localizer["Enroll Date"]</td>
+                <td>@Model.EnrollDate</td>
+            </tr>           
+            <tr>
+                <td class="text-right">@Localizer["Fee"]</td>
+                <td>@Model.Fee</td>
+            </tr>
+            <tr>
+                <td class="text-right">@Localizer["Paid"]</td>
+                <td>@Model.AmountPaid</td>
+            </tr>
+            <tr>
+                <td class="text-right">@Localizer["Quizzes"]</td>
+                <td>@Model.TotalQuizzes</td>
+            </tr>
+        </table>
+        
+        <div class="text-center">
+            <a href="/enrollments/edit/@Model.Id">@Localizer["Edit"]</a>&nbsp;&nbsp;
+            <a href="/enrollments/delete" class="js-delete" data-id="@Model.Id" related-count="@Model.TotalQuizzes" related-message='@Localizer["Enrollments with quizzes"]<br />@Localizer["cannot be deleted"].'>@Localizer["Delete"]</a>
+        </div>
+    </div>
+
+</div>

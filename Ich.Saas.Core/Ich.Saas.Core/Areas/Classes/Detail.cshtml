@@ -1,0 +1,90 @@
+@model Ich.Saas.Core.Areas.Classes.Detail
+@{
+    ViewBag.Title = @Localizer["Class"] + " " + @Localizer["Detail"];
+    var count = Model.Enrollments.Count;
+}
+
+<div class="page-box d-flex">
+    <div class="">
+        <div class="page-box-icon"><a href="@Model.Referer"><i class="icon-calendar"></i></a> @Localizer["Class"]</div>
+        <div class="page-box-name">@Model.ClassNumber</div>
+    </div>
+    <div class=" d-flex">
+        <div class=" page-box-data-first">@Localizer["Title"]<br />@Model.Course</div>
+        <div class=" page-box-data">@Localizer["Location"]<br />@Model.Location</div>
+        <div class=" page-box-data">@Localizer["StartDate"]<br />@Model.StartDate</div>
+        <div class=" page-box-data">@Localizer["EndDate"]<br />@Model.EndDate</div>
+        <div class=" page-box-data-last">@Localizer["Students"]<br />@Model.TotalEnrollments</div>
+    </div>
+    <div class="ml-auto">
+        <div class="page-box-buttons">
+            <a class="btn btn-sm btn-light js-edit" href="/classes/edit/@Model.Id">@Localizer["Edit"]</a>&nbsp;&nbsp;
+            <a class="btn btn-sm btn-light js-delete" href="/classes/delete" data-return-url="/classes" data-id="@Model.Id" related-count="@Model.TotalEnrollments" related-message='@Localizer["Classes with enrollments"]<br />@Localizer["cannot be deleted"].'>@Localizer["Delete"]</a>&nbsp;&nbsp;
+        </div>
+    </div>
+</div>
+
+<div class="tabs">
+    <ul class="nav nav-tabs nav-tabs-related">
+        <li class='nav-item'><a class='nav-link @(Model.Tab == "details" ? "active" : "")' data-toggle="tab" href="#details">@Localizer["Details"]</a></li>
+        <li class='nav-item'><a class='nav-link @(Model.Tab == "enrollments" ? "active" : "")' data-toggle="tab" href="#enrollments">@Localizer["Enrollments"]</a></li>
+    </ul>
+</div>
+
+<div class="tab-content">
+
+    <div class='tab-pane @(Model.Tab == "details" ? "active" : "")' id="details">
+
+        <div class="tab-pane-row row">
+
+            <div class="col-12 col-md-6">
+                <outputField value="ClassNumber"></outputField>
+                <outputField value="Course"></outputField>
+                <outputField value="MaxEnrollments"></outputField>
+                <outputField value="TotalEnrollments"></outputField>
+            </div>
+
+            <div class="col-12 col-md-6">
+                <outputField value="StartDate"></outputField>
+                <outputField value="EndDate"></outputField>
+                <outputField value="Location"></outputField>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane @(Model.Tab == "enrollments" ? "active" : "")" id="enrollments">
+
+        <div class="d-flex">
+            <div class=" tab-pane-heading">@(Model.Enrollments.Count.Pluralize(Localizer["Enrollment"], Localizer["Enrollments"]))</div>
+
+            <div class=" tab-pane-viewall">
+                <a href="/enrollments?classId=@(Model.Id)&AdvancedFilter=True">
+                    @(count == 0 ? "" : count == 9 ? @Localizer["View All"] : @Localizer["View List"])
+                </a>
+            </div>
+            <div class="ml-auto">
+                <a class="btn btn-sm btn-light" href="/enrollments/edit?classid=@Model.Id">@Localizer["New Enrollment"]</a>&nbsp;
+            </div>
+        </div>
+
+        @if (Model.Enrollments.Count == 0)
+        {
+            <div class="no-relateds">
+                @Localizer["No students are enrolled in this class"]
+
+            </div>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var enrollment in Model.Enrollments)
+                {
+                    @await Html.PartialAsync("_Enrollment", enrollment)
+                }
+            </div>
+        }
+    </div>
+</div>
+
+
+
