@@ -12,6 +12,7 @@ multi-language, multi-locale, and multi-currency.
 - Entity Framework Core
 - AspNetCore Identity
 - Unit of Work
+- Dependency Injection
 - Memory cache
 - Lazy Load
 - AutoMapper
